@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "breeze-tts-2-local-guide",
+    "title": "Breeze TTS 2 本地安装指南",
+    "subtitle": "Windows 实测 · AMD / CPU / Mac 未实测路线",
+    "description": "从下载到网页生成，含 AMD 显卡和 CPU 未实测教程、驱动前提与本地使用经验。",
+    "date": "2026-10-25",
+    "category": "AI 实践",
+    "tags": [
+      "Breeze TTS 2",
+      "本地部署",
+      "语音合成"
+    ],
+    "minutes": 12,
+    "body": "breeze-tts-2-concise.html",
+    "source": "https://chatgpt.com/share/6addb8ed-6324-83e8-a6fe-c626eea746f8"
+  }
+]
