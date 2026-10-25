@@ -1,0 +1,4 @@
+interface:
+  display_name: "Breeze 配音与混音"
+  short_description: "Clone a local voice, prepare line timing and mix with BGM."
+  default_prompt: "使用 $breeze-voice-workflow 将我的授权录音用于逐句配音，并整理时间轴和混音。"
