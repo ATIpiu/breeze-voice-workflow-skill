@@ -2,6 +2,8 @@
 
 [打开完整教程主页](https://atipiu.github.io/breeze-voice-workflow-skill/) · [下载独立 HTML](https://atipiu.github.io/breeze-voice-workflow-skill/breeze-tts-2-local-guide.html) · [Skill 下载](https://github.com/ATIpiu/breeze-voice-workflow-skill/releases/latest)
 
+[Codex 重置提醒](https://blog.atipiu.org/codex-reset/) · [博客首页独立 HTML](https://atipiu.github.io/breeze-voice-workflow-skill/atipiu-blog.html)。首页和文章列表的 Codex 入口直接连接 Linux 笔记本上的订阅服务；静态站构建不会把这个地址改写到 GitHub Pages。首页 HTML 内嵌样式、交互与搜索索引，其他文章及在线订阅需要联网打开。发布前运行 `python tools/build_site.py` 和 `python tools/check_site.py`。
+
 本地 Breeze-TTS-2 原版配音与后期 Skill：声音克隆、逐句 WAV、变速裁静音、节拍排句与 BGM 混音。
 
 入口：[SKILL.md](breeze-voice-workflow/SKILL.md) · [使用说明](breeze-voice-workflow/references/usage.md) · [音色包：旁白、角色与情绪](breeze-voice-workflow/references/voice-pack.md) · [验证范围](breeze-voice-workflow/references/validation.md)

@@ -185,3 +185,7 @@
 .chapter-page .chapter-toc a .toc-name{font:inherit;color:inherit;min-width:0}
 .toc-link-arrow{width:16px;height:16px;flex-shrink:0;margin-left:auto;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;fill:none;opacity:.6}
 @media(max-width:600px){.chapter-page .chapter-toc{padding:0 13px;margin-bottom:20px}.chapter-page .chapter-toc nav{grid-template-columns:1fr;padding-bottom:13px;gap:7px}.chapter-page .chapter-toc summary{gap:10px;min-height:56px}.toc-caption{gap:8px}.toc-controls{gap:7px}.toc-count{padding:3px 6px}.chapter-page .chapter-toc a{font-size:12px}}
+
+/* Live tool entry, placed ahead of the existing guide. */
+.blog-updates{margin:0 0 56px;padding:0 0 10px;border-bottom:1px solid var(--line,#d4d0c8)}.blog-updates .note-row{padding:24px 0 30px}.blog-updates .note-row h2{font-size:clamp(25px,4vw,42px);letter-spacing:-.04em;line-height:1.25}.blog-updates .eyebrow{margin-bottom:0}
+

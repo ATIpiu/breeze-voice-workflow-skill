@@ -33,6 +33,8 @@ def write(path,text):
 
 def url(p): return '/notes/'+p['slug']+'/'
 
+def entry_url(p): return p.get('external_url') or url(p)
+
 def frame(title,body,path='/',description=None,active='',post=None):
     desc=description or SITE['description']
     links=''.join(f'<a href="{href}"'+(' aria-current="page"' if active==name else '')+f'>{label}</a>' for href,name,label in [('/archive/','archive','文章'),('/community/','community','社群'),('/about/','about','关于')])
@@ -43,7 +45,8 @@ def frame(title,body,path='/',description=None,active='',post=None):
 
 def row(p):
     terms=' '.join([p['title'],p['subtitle'],p['description'],p['category'],*p['tags']])
-    return f'''<article class="note-row" data-note data-terms="{e(terms,quote=True)}"><div class="meta"><time datetime="{p['date']}">{p['date'].replace('-','.')}</time><span>{e(p['category'])}</span><span>{p['minutes']} 分钟</span></div><h2><a href="{url(p)}">{e(p['title'])}</a></h2><p>{e(p['description'])}</p><a class="read-link" href="{url(p)}">阅读全文 →</a></article>'''
+    label='打开订阅网站 →' if p.get('external_url') else '阅读全文 →'
+    return f'''<article class="note-row" data-note data-terms="{e(terms,quote=True)}"><div class="meta"><time datetime="{p['date']}">{p['date'].replace('-','.')}</time><span>{e(p['category'])}</span><span>{p['minutes']} 分钟</span></div><h2><a href="{entry_url(p)}">{e(p['title'])}</a></h2><p>{e(p['description'])}</p><a class="read-link" href="{entry_url(p)}">{label}</a></article>'''
 
 def article_content(p,body):
     headings=re.findall(r'<section id="([^"]+)"><h2>(.*?)</h2>',body)
@@ -84,7 +87,9 @@ def build():
         else: content=article_content(p,resolve_links(body,LEGACY_ROUTES))
         write('notes/'+p['slug']+'/index.html',frame(p['title'],content,url(p),p['description'],post=p))
     hub=next(p for p in POSTS if p.get('hub'))
-    write('index.html',frame(hub['title'],'<main id="main" class="page guide-home">'+hub['html']+'</main>',description=hub['description']))
+    updates=''.join(row(p) for p in POSTS if p.get('external_url'))
+    updates=('<section class="blog-updates" aria-label="最近发布"><p class="eyebrow">最近发布 / 新工具</p>'+updates+'</section>') if updates else ''
+    write('index.html',frame('笔记','<main id="main" class="page guide-home">'+updates+hub['html']+'</main>',description=SITE['description']))
     original=next(p for p in ORIGINAL_POSTS if p['slug']=='breeze-tts-2-local-guide')
     full_body=(ROOT/'content'/original['body']).read_text(encoding='utf-8')
     write('breeze-tts-2-local-guide.html',frame(original['title']+' · 完整离线版',article_content(original,full_body),'/breeze-tts-2-local-guide.html',original['description'],post=original))
@@ -102,13 +107,13 @@ def build():
     community=f'''<main id="main" class="page community-page" data-community><header class="community-intro"><p class="eyebrow">ATIPIU / COMMUNITY</p><h1>选个话题，<br>一起聊聊。</h1><p>算法前沿、AI 生产力和娱乐创作。找到感兴趣的方向，扫码加入讨论。</p></header><div class="community-controls" data-qr-controls hidden><div class="qr-platforms" role="group" aria-label="选择群聊平台"><button type="button" data-qr-select="wechat" aria-pressed="true">微信</button><button type="button" data-qr-select="qq" aria-pressed="false">QQ</button></div><div class="qr-filters" role="group" aria-label="选择群聊主题"><button type="button" data-qr-topic="all" aria-pressed="true">全部主题</button>{topic_filters}</div></div><div class="qr-meta"><span data-qr-count aria-live="polite">12 个群聊二维码</span><span>更新于 2026.10.26</span></div><p class="qr-expiry" data-qr-expiry>微信二维码原图标注「11月2日前有效」，请以原图及微信提示为准。</p>{sections}<p class="community-footnote">手机可点开原图后保存，在对应应用中识别；电脑可直接用微信或 QQ 扫码。1、2 群任选其一，入群结果以应用提示为准。</p></main>'''
     write('community/index.html',frame('社群 · AI 主题群聊',community,'/community/',description='算法前沿、AI 生产力与娱乐创作的微信群、QQ群二维码。',active='community'))
     write('404.html',frame('页面不存在','<main id="main" class="page"><div class="page-heading"><h1>页面不存在</h1><p>这个地址没有文章。</p></div><a href="/">返回首页 →</a></main>','/404.html'))
-    write('search.json',json.dumps([{k:p[k] for k in ['title','subtitle','description','category','tags','date']}|{'url':url(p)} for p in POSTS],ensure_ascii=False))
+    write('search.json',json.dumps([{k:p[k] for k in ['title','subtitle','description','category','tags','date']}|{'url':entry_url(p)} for p in POSTS],ensure_ascii=False))
     rss=ET.Element('rss',version='2.0'); channel=ET.SubElement(rss,'channel')
     for k,v in [('title','ATIPIU 的笔记'),('link',BASE),('description',SITE['description']),('language','zh-cn')]: ET.SubElement(channel,k).text=v
     for p in POSTS:
         item=ET.SubElement(channel,'item')
         date=datetime.fromisoformat(p['date']+'T01:00:00+00:00').strftime('%a, %d %b %Y %H:%M:%S GMT')
-        for k,v in [('title',p['title']),('link',BASE+url(p)),('guid',BASE+url(p)),('description',p['description']),('pubDate',date)]: ET.SubElement(item,k).text=v
+        for k,v in [('title',p['title']),('link',p.get('external_url') or BASE+url(p)),('guid',BASE+url(p)),('description',p['description']),('pubDate',date)]: ET.SubElement(item,k).text=v
     write('feed.xml','<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(rss,encoding='unicode'))
     sitemap=ET.Element('urlset',xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
     for path in ['/','/archive/','/community/','/about/',*[url(p) for p in POSTS]]:

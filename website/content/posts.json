@@ -1,5 +1,21 @@
 [
   {
+    "slug": "codex-reset-watch",
+    "title": "Codex 重置提醒：邮箱先知道",
+    "subtitle": "免费订阅 · 邮箱验证 · 随时退订",
+    "description": "我做了一个免费的 Codex 额度重置提醒，验证邮箱后，确认重置消息就给你发邮件。点击直接进入订阅网站。",
+    "date": "2026-10-26",
+    "category": "AI 工具",
+    "tags": [
+      "Codex",
+      "邮件订阅",
+      "额度重置"
+    ],
+    "minutes": 2,
+    "body": "codex-reset-watch.html",
+    "external_url": "https://blog.atipiu.org/codex-reset/"
+  },
+  {
     "slug": "breeze-tts-2-local-guide",
     "title": "Breeze TTS 2 本地安装指南",
     "subtitle": "Windows 便携实测 · Win / Mac 图形版文档路线",
