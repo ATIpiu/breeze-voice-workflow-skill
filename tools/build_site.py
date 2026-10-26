@@ -26,7 +26,9 @@ def html_urls(text):
                   lambda m: m[1] + prefix + m[2] + m[3], text)
     return text.replace('</div><p class="skill-note">', '</div><p class="skill-note"><a href="' + prefix + '/breeze-tts-2-local-guide.html" download="breeze-tts-2-local-guide.html">下载独立 HTML</a> · ')
 
-for page in ['archive/index.html', 'about/index.html', 'community/index.html', '404.html', article]:
+for source_page in sorted((root / 'dist').rglob('*.html')):
+    page = source_page.relative_to(root / 'dist').as_posix()
+    if page == 'breeze-tts-2-local-guide.html': continue
     target = site / page
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(html_urls((root / 'dist' / page).read_text(encoding='utf-8')), encoding='utf-8')
@@ -48,7 +50,7 @@ home = home.replace(base + '/notes/breeze-tts-2-local-guide/', base + '/')
 (site / '.nojekyll').write_text('', encoding='utf-8')
 
 # Single-file export: style, interaction, samples, packages and search index are embedded.
-standalone = home
+standalone = html_urls((root / 'dist/breeze-tts-2-local-guide.html').read_text(encoding='utf-8'))
 for name in ['favicon.svg','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav',
              'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip','breeze-voice-workflow-skill-20261026.zip','start-breeze.cmd']:
     kind = 'audio/wav' if name.endswith('.wav') else ('application/zip' if name.endswith('.zip') else ('image/svg+xml' if name.endswith('.svg') else 'application/octet-stream'))

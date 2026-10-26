@@ -12,4 +12,4 @@
 
 [博客教程](https://blog.atipiu.org/notes/breeze-tts-2-local-guide/) · [官方模型源码与许可](https://github.com/breezeblue-ai/breeze-tts)
 
-`docs/` 是完整 GitHub Pages 网站，首页直接显示教程，包含样音和下载包；`website/` 是公开网页源码，`breeze-tts-2-local-guide.html` 是单文件导出。服务器配置、研究临时文件与私人素材不在仓库中。修改网站源码后，运行 `python tools/build_site.py` 重新生成页面，提交 `docs/` 即可触发 Pages 发布。
+`docs/` 是 GitHub Pages 网站：总览连接图形版安装、便携版安装、声音与 Prompt、进阶配音四篇教程，旧锚点会跳到对应章节。`website/` 是公开网页源码；维护同一份正文，由构建器拆成阅读页面。`breeze-tts-2-local-guide.html` 仍是包含全部内容、样音与下载包的单文件导出。服务器配置、研究临时文件与私人素材不在仓库中。修改网站源码后，运行 `python tools/build_site.py` 重新生成页面，提交 `docs/` 即可触发 Pages 发布。

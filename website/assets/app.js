@@ -2,6 +2,16 @@
   'use strict';
   const $ = (s, p=document) => p.querySelector(s);
   const $$ = (s, p=document) => [...p.querySelectorAll(s)];
+  const legacyRoutes=document.getElementById('legacy-series-routes');
+  function followLegacyAnchor(){
+    if(!legacyRoutes)return false;
+    let key;try{key=decodeURIComponent(location.hash.slice(1));}catch(_){return false;}
+    const route=JSON.parse(legacyRoutes.textContent)[key],script=document.querySelector('script[src*="/assets/app.js"]');
+    if(!route||!script)return false;
+    location.replace(new URL(route,new URL('../',script.src)).href);return true;
+  }
+  if(followLegacyAnchor())return;
+  if(legacyRoutes)window.addEventListener('hashchange',followLegacyAnchor);
   const store = {get(k){try{return localStorage.getItem(k);}catch(_){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(_){}}};
   let toastTimer;
   function toast(message){const box=$('#toast');box.textContent=message;box.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('visible'),2600);}
@@ -64,7 +74,7 @@
     panelAnimation?.cancel();
     panels.forEach(panel=>{panel.hidden=panel.dataset.platformPanel!==platform;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','tab-'+panel.dataset.platformPanel);});
     tabs.forEach(tab=>{const active=tab.dataset.platform===platform;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});
-    $('.platform-tabs').dataset.active=platform;
+    const platformTabs=$('.platform-tabs');if(platformTabs)platformTabs.dataset.active=platform;
     hardwarePanels.forEach(panel=>{panel.hidden=panel.dataset.hardwarePanel!==hardware;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','tab-'+panel.dataset.hardwarePanel);});
     $$('[data-hardware-only]').forEach(block=>block.hidden=block.dataset.hardwareOnly!==hardware);
     hardwareTabs.forEach(tab=>{const active=tab.dataset.hardware===hardware;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});
@@ -72,14 +82,14 @@
     refreshToc();
     store.set('atipiu-platform',platform);
     store.set('atipiu-hardware',hardware);
-    if(updateUrl)history.replaceState(null,'','#'+(platform==='mac'?'mac':{nvidia:'windows',amd:'amd',cpu:'cpu'}[hardware]));
+    if(updateUrl){const panel=panels.find(p=>p.dataset.platformPanel===platform);history.replaceState(null,'','#'+(panel?.dataset.routeAnchor||(platform==='mac'?'mac':{nvidia:'windows',amd:'amd',cpu:'cpu'}[hardware])));}
     const selected=changedPlatform?panels.find(p=>p.dataset.platformPanel===platform):hardwarePanels.find(p=>p.dataset.hardwarePanel===hardware);
     if(animate&&(changedPlatform||changedHardware)&&!motion.matches)panelAnimation=selected?.animate([{opacity:.45,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'cubic-bezier(.22,1,.36,1)'});
     if(scrollToPanel&&changedHardware&&hardwareSwitcher?.getBoundingClientRect().top<=16)selected?.scrollIntoView({block:'start',behavior:motion.matches?'instant':'smooth'});
     updateReading();
   }
-  if(panels.length&&switcher){
-    switcher.hidden=false;
+  if((panels.length&&switcher)||(hardwarePanels.length&&hardwareSwitcher)){
+    if(switcher)switcher.hidden=false;
     if(hardwareSwitcher)hardwareSwitcher.hidden=false;
     const fromHash=routeForTarget(hashTarget());
     selectRoute({platform:fromHash.platform||store.get('atipiu-platform')||'windows',hardware:fromHash.hardware||store.get('atipiu-hardware')||'nvidia'});
