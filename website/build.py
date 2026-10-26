@@ -57,6 +57,10 @@ def article_content(p,body):
     toc=''.join(f'<a href="#{anchor}"><span>{n:02d}</span>{title}</a>' for n,(anchor,title) in enumerate(headings,1))
     chapter_nav=series_nav(p['slug']) if p.get('chapter') else ''
     content=f'''<main id="main" class="page article-page"><a class="back" href="/archive/">← 全部文章</a><header class="post-header"><p class="eyebrow">FIELD NOTES <span> / </span> {e(p['category'])}</p><h1>{title_markup}</h1><p class="subtitle">{e(p['subtitle'])}</p><div class="meta"><time datetime="{p['date']}">{p['date'].replace('-','.')}</time><span>文 / ATIPIU</span><span>{p['minutes']} 分钟阅读</span></div></header>{chapter_nav}{feature}<div class="article-layout"><aside class="article-rail"><details class="article-toc" open><summary>本篇目录 <span>↗</span></summary><nav aria-label="文章目录">{toc}</nav></details></aside><article class="prose">{body}</article></div><div class="post-bottom"><a href="/archive/">← 全部文章</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
+    if p.get('chapter'):
+        crumb='<div class="chapter-crumb"><a href="/notes/breeze-tts-2-local-guide/">← Breeze TTS 2 指南</a><a class="chapter-official" href="https://breezeblue.ai/?code=R6T8B7" target="_blank" rel="noopener noreferrer">官方体验 ↗</a></div>'
+        heading=f'<header class="chapter-heading"><h1>{e(p["chapter"])}</h1><p>{e(p["subtitle"])}</p></header>'
+        content=f'''<main id="main" class="page article-page chapter-page">{crumb}{chapter_nav}{heading}<div class="article-layout"><aside class="article-rail"><details class="article-toc" open><summary>本篇目录 <span>↗</span></summary><nav aria-label="文章目录">{toc}</nav></details></aside><div class="chapter-content">{feature}<article class="prose">{body}</article></div></div><div class="post-bottom"><a href="/notes/breeze-tts-2-local-guide/">← 返回指南总览</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
     return content
 
 def build():

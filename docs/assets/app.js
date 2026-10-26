@@ -100,7 +100,7 @@
     // Reveal the platform and hardware before restoring a deep link.
     if(fromHash.platform)requestAnimationFrame(()=>hashTarget()?.scrollIntoView());
   }
-  const toc=$('.article-toc'),mobile=matchMedia('(max-width:760px)');
+  const toc=$('.article-toc'),mobile=matchMedia('(max-width:980px)');
   if(toc){toc.open=!mobile.matches;mobile.addEventListener('change',event=>toc.open=!event.matches);}
   function updateReading(){
     if(!readingMeter||!article)return;
@@ -140,7 +140,7 @@
     document.addEventListener('play',event=>{if(event.target instanceof HTMLMediaElement)$$('audio').forEach(audio=>{if(audio!==event.target)audio.pause();});},true);
     syncSample();
   }
-  if(!motion.matches&&'IntersectionObserver' in window){
+  if(!motion.matches&&!document.querySelector('.chapter-page')&&'IntersectionObserver' in window){
     const reveal=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;const element=entry.target;reveal.unobserve(element);element.animate([{opacity:.45,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:550,easing:'cubic-bezier(.22,1,.36,1)'});if(element.classList.contains('voice-sculpture'))$$('.wave-base rect',element).forEach((bar,index)=>bar.animate([{transform:'scaleY(.12)'},{transform:'scaleY(1)'}],{duration:600,delay:index*5,easing:'cubic-bezier(.22,1,.36,1)'}));}},{threshold:.15});
     $$('.official-copy,.voice-sculpture,.prose .step-heading,.prose section > h2').forEach(element=>reveal.observe(element));
   }
