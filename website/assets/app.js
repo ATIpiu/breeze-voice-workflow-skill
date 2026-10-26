@@ -101,7 +101,7 @@
     if(fromHash.platform)requestAnimationFrame(()=>hashTarget()?.scrollIntoView());
   }
   const toc=$('.article-toc'),mobile=matchMedia('(max-width:980px)');
-  if(toc){toc.open=!mobile.matches;mobile.addEventListener('change',event=>toc.open=!event.matches);}
+  if(toc&&!article?.classList.contains('chapter-page')){toc.open=!mobile.matches;mobile.addEventListener('change',event=>toc.open=!event.matches);}
   function updateReading(){
     if(!readingMeter||!article)return;
     const bounds=article.getBoundingClientRect(),distance=bounds.height-innerHeight;
@@ -110,7 +110,7 @@
     const current=[...visible].reverse().find(section=>section.getBoundingClientRect().top<=160)||visible[0];
     $$('.article-toc a').forEach(link=>{if(current&&link.hash==='#'+current.id){link.setAttribute('aria-current','location');if(tocCursor)tocCursor.style.transform='translateY('+(link.offsetTop+(link.offsetHeight-16)/2)+'px)';}else link.removeAttribute('aria-current');});
   }
-  if(article&&sections.length){readingMeter=document.createElement('div');readingMeter.className='reading-meter';readingMeter.setAttribute('aria-hidden','true');document.body.append(readingMeter);if(toc){tocCursor=document.createElement('span');tocCursor.className='toc-cursor';tocCursor.setAttribute('aria-hidden','true');$('nav',toc).append(tocCursor);}const schedule=()=>{if(readingFrame)return;readingFrame=requestAnimationFrame(()=>{readingFrame=null;updateReading();});};window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});updateReading();}
+  if(article&&sections.length){readingMeter=document.createElement('div');readingMeter.className='reading-meter';readingMeter.setAttribute('aria-hidden','true');document.body.append(readingMeter);if(toc&&!article.classList.contains('chapter-page')){tocCursor=document.createElement('span');tocCursor.className='toc-cursor';tocCursor.setAttribute('aria-hidden','true');$('nav',toc).append(tocCursor);}const schedule=()=>{if(readingFrame)return;readingFrame=requestAnimationFrame(()=>{readingFrame=null;updateReading();});};window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});updateReading();}
 
   const sample=$('#official-sample'),sampleButton=$('[data-sample-play]'),sculpture=$('.voice-sculpture');
   if(sample&&sampleButton&&sculpture){

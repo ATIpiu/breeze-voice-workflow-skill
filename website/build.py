@@ -60,7 +60,7 @@ def article_content(p,body):
     if p.get('chapter'):
         crumb='<div class="chapter-crumb"><a href="/notes/breeze-tts-2-local-guide/">← Breeze TTS 2 指南</a><a class="chapter-official" href="https://breezeblue.ai/?code=R6T8B7" target="_blank" rel="noopener noreferrer">官方体验 ↗</a></div>'
         heading=f'<header class="chapter-heading"><h1>{e(p["chapter"])}</h1><p>{e(p["subtitle"])}</p></header>'
-        content=f'''<main id="main" class="page article-page chapter-page">{crumb}{chapter_nav}{heading}<div class="article-layout"><aside class="article-rail"><details class="article-toc" open><summary>本篇目录 <span>↗</span></summary><nav aria-label="文章目录">{toc}</nav></details></aside><div class="chapter-content">{feature}<article class="prose">{body}</article></div></div><div class="post-bottom"><a href="/notes/breeze-tts-2-local-guide/">← 返回指南总览</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
+        content=f'''<main id="main" class="page article-page chapter-page">{crumb}{chapter_nav}{heading}<details class="article-toc chapter-toc"><summary>本篇目录 <span>↗</span></summary><nav aria-label="文章目录">{toc}</nav></details><div class="article-layout"><div class="chapter-content">{feature}<article class="prose">{body}</article></div></div><div class="post-bottom"><a href="/notes/breeze-tts-2-local-guide/">← 返回指南总览</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
     return content
 
 def build():

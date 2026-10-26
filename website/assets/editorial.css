@@ -69,7 +69,7 @@
 .guide-card small{font-size:10px;color:var(--muted);line-height:1.7}
 .guide-bottom{font-size:12px;color:var(--muted);margin:24px 0 0}
 .guide-bottom a{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
-.chapter-page{max-width:1040px;padding-top:18px}
+.chapter-page{max-width:860px;padding-top:18px}
 .chapter-crumb{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;margin-bottom:10px}
 .chapter-crumb>a{display:inline-flex;align-items:center;min-height:40px;color:var(--muted)}
 .chapter-crumb>a.chapter-official{font-size:12px;color:var(--ink);border:1px solid var(--line);border-radius:5px;min-height:40px;padding:8px 13px}
@@ -77,10 +77,10 @@
 .series-nav{display:flex;flex-wrap:wrap;gap:0 22px;border-block:1px solid var(--line);margin:0 0 24px;font-size:12px}
 .series-nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--muted);border-bottom:2px solid transparent}
 .series-nav a[aria-current]{color:var(--ink);border-color:var(--accent);font-weight:550}
-.chapter-heading{margin:0 0 24px 216px}
+.chapter-heading{margin:0 0 22px}
 .chapter-heading h1{font-size:32px;line-height:1.3;font-weight:550;letter-spacing:-.035em;margin:0 0 8px}
 .chapter-heading>p{font-size:12px;line-height:1.75;color:var(--muted);margin:0}
-.chapter-page .article-layout{grid-template-columns:180px minmax(0,1fr);gap:36px}
+.chapter-page .article-layout{display:block}
 .chapter-content{min-width:0}
 .chapter-page .article-rail{top:24px}
 .chapter-page .article-toc summary{padding-bottom:12px}
@@ -115,7 +115,7 @@
 .chapter-page .skill-actions{flex-wrap:wrap;max-width:210px}
 .chapter-page .skill-actions a{padding:10px 13px;gap:12px}
 .chapter-page .skill-note{font-size:10px;margin-top:8px}
-.chapter-page .post-bottom{margin-left:216px;margin-top:36px;padding-top:20px}
+.chapter-page .post-bottom{margin-left:0;margin-top:36px;padding-top:20px}
 .sample-preview{max-width:100%;margin:20px 0 28px}
 .sample-preview .voice-sculpture{padding:20px;border:1px solid var(--line);border-radius:7px;background:var(--soft)}
 .chapter-page .sample-wave{height:100px}
@@ -163,3 +163,10 @@
 .chapter-page .sample-wave{height:86px}
 .chapter-label-short{display:none}
 @media(max-width:760px){.chapter-page{padding-top:8px}.chapter-page .series-nav{flex-wrap:wrap;gap:0 12px}.chapter-page .series-nav a{min-height:40px}.chapter-label-full{display:none}.chapter-label-short{display:inline}.chapter-page .prose #windows-studio,.chapter-page .prose #mac{margin-top:0}.chapter-page .sample-wave{height:76px}}
+
+/* Chapter contents stay in the reading column, without a reserved sidebar. */
+.chapter-page .chapter-toc{border-block:1px solid var(--line);margin:0 0 22px}
+.chapter-page .chapter-toc summary{min-height:44px;padding:12px 0;font-size:12px;line-height:1.5}
+.chapter-page .chapter-toc nav{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px 24px;border-top:0;padding:0 0 14px}
+.chapter-page .chapter-toc a{padding:7px 0;font-size:12px;gap:8px}
+@media(max-width:760px){.chapter-page .chapter-toc{margin-bottom:18px}.chapter-page .chapter-toc nav{gap:2px 18px}.chapter-page .chapter-toc a{font-size:11px}}
