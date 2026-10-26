@@ -65,7 +65,7 @@
   function hashTarget(){try{return document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch(_){return null;}}
   function hiddenByRoute(element){return !!element?.closest('[data-platform-panel][hidden],[data-hardware-panel][hidden],[data-hardware-only][hidden]');}
   function routeForTarget(target){return {platform:target?.closest('[data-platform-panel]')?.dataset.platformPanel,hardware:target?.closest('[data-hardware-panel]')?.dataset.hardwarePanel||target?.closest('[data-hardware-only]')?.dataset.hardwareOnly};}
-  function refreshToc(){let index=0;$$('.article-toc a').forEach(link=>{const target=document.getElementById(link.hash.slice(1));link.hidden=hiddenByRoute(target);if(!link.hidden)$('span',link).textContent=String(++index).padStart(2,'0');else link.removeAttribute('aria-current');});}
+  function refreshToc(){let index=0;$$('.article-toc a').forEach(link=>{const target=document.getElementById(link.hash.slice(1));link.hidden=hiddenByRoute(target);if(!link.hidden)$('span',link).textContent=String(++index).padStart(2,'0');else link.removeAttribute('aria-current');});const count=$('[data-toc-count]');if(count)count.textContent=index+' 个章节';}
   function selectRoute({platform=activePlatform,hardware=activeHardware},{animate=false,updateUrl=false,scrollToPanel=false}={}){
     if(!panels.some(p=>p.dataset.platformPanel===platform))platform='windows';
     if(!hardwarePanels.some(p=>p.dataset.hardwarePanel===hardware))hardware='nvidia';
@@ -101,12 +101,14 @@
     if(fromHash.platform)requestAnimationFrame(()=>hashTarget()?.scrollIntoView());
   }
   const toc=$('.article-toc'),mobile=matchMedia('(max-width:980px)');
+  refreshToc();
   if(toc&&!article?.classList.contains('chapter-page')){toc.open=!mobile.matches;mobile.addEventListener('change',event=>toc.open=!event.matches);}
   function updateReading(){
     if(!readingMeter||!article)return;
     const bounds=article.getBoundingClientRect(),distance=bounds.height-innerHeight;
     readingMeter.style.transform='scaleX('+Math.max(0,Math.min(1,-bounds.top/Math.max(1,distance)))+')';
-    const visible=sections.filter(section=>!hiddenByRoute(section));
+    const linkedSections=new Set($$('.article-toc a').filter(link=>!link.hidden).map(link=>link.hash.slice(1)));
+    const visible=sections.filter(section=>!hiddenByRoute(section)&&linkedSections.has(section.id));
     const current=[...visible].reverse().find(section=>section.getBoundingClientRect().top<=160)||visible[0];
     $$('.article-toc a').forEach(link=>{if(current&&link.hash==='#'+current.id){link.setAttribute('aria-current','location');if(tocCursor)tocCursor.style.transform='translateY('+(link.offsetTop+(link.offsetHeight-16)/2)+'px)';}else link.removeAttribute('aria-current');});
   }

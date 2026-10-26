@@ -60,7 +60,10 @@ def article_content(p,body):
     if p.get('chapter'):
         crumb='<div class="chapter-crumb"><a href="/notes/breeze-tts-2-local-guide/">← Breeze TTS 2 指南</a><a class="chapter-official" href="https://breezeblue.ai/?code=R6T8B7" target="_blank" rel="noopener noreferrer">官方体验 ↗</a></div>'
         heading=f'<header class="chapter-heading"><h1>{e(p["chapter"])}</h1><p>{e(p["subtitle"])}</p></header>'
-        content=f'''<main id="main" class="page article-page chapter-page">{crumb}{chapter_nav}{heading}<details class="article-toc chapter-toc"><summary>本篇目录 <span>↗</span></summary><nav aria-label="文章目录">{toc}</nav></details><div class="article-layout"><div class="chapter-content">{feature}<article class="prose">{body}</article></div></div><div class="post-bottom"><a href="/notes/breeze-tts-2-local-guide/">← 返回指南总览</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
+        chapter_toc=''.join(f'<a href="#{anchor}"><span class="toc-number">{n:02d}</span><span class="toc-name">{title}</span><svg class="toc-link-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10m-4-4 4 4-4 4"/></svg></a>' for n,(anchor,title) in enumerate(headings,1))
+        toc_summary=f'''<summary><span class="toc-caption"><span class="toc-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M7 5h9M7 10h9M7 15h9M3 5h.5M3 10h.5M3 15h.5"/></svg></span>本篇目录</span><span class="toc-controls"><span class="toc-count" data-toc-count aria-live="polite">{len(headings)} 个章节</span><span class="toc-expand-label">展开</span><span class="toc-collapse-label">收起</span><svg class="toc-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg></span></summary>'''
+
+        content=f'''<main id="main" class="page article-page chapter-page">{crumb}{chapter_nav}{heading}<details class="article-toc chapter-toc">{toc_summary}<nav aria-label="文章目录">{chapter_toc}</nav></details><div class="article-layout"><div class="chapter-content">{feature}<article class="prose">{body}</article></div></div><div class="post-bottom"><a href="/notes/breeze-tts-2-local-guide/">← 返回指南总览</a><button class="plain-button" type="button" data-share>复制文章链接 ↗</button></div></main>'''
     return content
 
 def build():

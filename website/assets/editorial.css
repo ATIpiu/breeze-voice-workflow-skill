@@ -164,9 +164,24 @@
 .chapter-label-short{display:none}
 @media(max-width:760px){.chapter-page{padding-top:8px}.chapter-page .series-nav{flex-wrap:wrap;gap:0 12px}.chapter-page .series-nav a{min-height:40px}.chapter-label-full{display:none}.chapter-label-short{display:inline}.chapter-page .prose #windows-studio,.chapter-page .prose #mac{margin-top:0}.chapter-page .sample-wave{height:76px}}
 
-/* Chapter contents stay in the reading column, without a reserved sidebar. */
-.chapter-page .chapter-toc{border-block:1px solid var(--line);margin:0 0 22px}
-.chapter-page .chapter-toc summary{min-height:44px;padding:12px 0;font-size:12px;line-height:1.5}
-.chapter-page .chapter-toc nav{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px 24px;border-top:0;padding:0 0 14px}
-.chapter-page .chapter-toc a{padding:7px 0;font-size:12px;gap:8px}
-@media(max-width:760px){.chapter-page .chapter-toc{margin-bottom:18px}.chapter-page .chapter-toc nav{gap:2px 18px}.chapter-page .chapter-toc a{font-size:11px}}
+/* Inline reading navigation, contained in the same column as the article. */
+.chapter-page .chapter-toc{margin:0 0 24px;padding:0 16px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+.chapter-page .chapter-toc summary{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:58px;padding:12px 0;font-size:12px;letter-spacing:0;line-height:1.5;list-style:none}
+.chapter-page .chapter-toc summary span{transform:none}
+.toc-caption,.toc-controls{display:flex;align-items:center}
+.toc-caption{gap:10px;font-weight:550;color:var(--ink)}
+.toc-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.toc-icon svg{width:17px;height:17px;stroke:var(--ink);stroke-width:1.3;fill:none;stroke-linecap:round}
+.toc-controls{gap:10px;color:var(--muted);font-size:11px}
+.toc-count{font-variant-numeric:tabular-nums;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--line)}
+.toc-chevron{width:15px;height:15px;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;fill:none;transition:transform .18s}
+.toc-collapse-label{display:none}.chapter-toc[open] .toc-expand-label{display:none}.chapter-toc[open] .toc-collapse-label{display:inline}.chapter-toc[open] .toc-chevron{transform:rotate(180deg)}
+.chapter-page .chapter-toc nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;border:0;padding:0 0 16px}
+.chapter-page .chapter-toc a{display:flex;align-items:center;gap:11px;min-height:48px;padding:10px 13px;background:var(--surface);border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:12px;line-height:1.6}
+.chapter-page .chapter-toc a:hover{color:var(--ink);border-color:var(--muted)}
+.chapter-page .chapter-toc a[aria-current]{color:var(--ink);border-color:var(--accent);font-weight:500}
+.chapter-page .chapter-toc a .toc-number{flex-shrink:0;font:10px/1.5 Consolas,monospace;font-variant-numeric:tabular-nums;color:var(--muted);min-width:17px}
+.chapter-page .chapter-toc a[aria-current] .toc-number{color:var(--accent)}
+.chapter-page .chapter-toc a .toc-name{font:inherit;color:inherit;min-width:0}
+.toc-link-arrow{width:16px;height:16px;flex-shrink:0;margin-left:auto;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;fill:none;opacity:.6}
+@media(max-width:600px){.chapter-page .chapter-toc{padding:0 13px;margin-bottom:20px}.chapter-page .chapter-toc nav{grid-template-columns:1fr;padding-bottom:13px;gap:7px}.chapter-page .chapter-toc summary{gap:10px;min-height:56px}.toc-caption{gap:8px}.toc-controls{gap:7px}.toc-count{padding:3px 6px}.chapter-page .chapter-toc a{font-size:12px}}
