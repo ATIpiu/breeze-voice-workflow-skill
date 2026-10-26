@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import groups from '../../data/community.json';
+const filters = [['algorithm', '算法讨论'], ['productivity', 'AI 生产力'], ['entertainment', 'AI 娱乐']];
+const keys = [...new Set(groups.map(g => g.topic))];
+---
+<Base title="社群 · AI 主题群聊" path="/community/" description="算法前沿、AI 生产力与娱乐创作的微信群、QQ群二维码。" active="community">
+  <main id="main" class="page community-page" data-community>
+    <header class="community-intro" data-reveal><p class="eyebrow">ATIPIU / COMMUNITY</p><h1>选个话题，<br />一起聊聊。</h1><p>算法前沿、AI 生产力和娱乐创作。找到感兴趣的方向，扫码加入讨论。</p></header>
+    <div class="community-controls" data-qr-controls hidden>
+      <div class="qr-platforms" role="group" aria-label="选择群聊平台"><button type="button" data-qr-select="wechat" aria-pressed="true">微信</button><button type="button" data-qr-select="qq" aria-pressed="false">QQ</button></div>
+      <div class="qr-filters" role="group" aria-label="选择群聊主题"><button type="button" data-qr-topic="all" aria-pressed="true">全部主题</button>{filters.map(([k, t]) => <button type="button" data-qr-topic={k} aria-pressed="false">{t}</button>)}</div>
+    </div>
+    <div class="qr-meta"><span data-qr-count aria-live="polite">{groups.length} 个群聊二维码</span><span>更新于 2026.10.26</span></div>
+    <p class="qr-expiry" data-qr-expiry>微信二维码原图标注「11月2日前有效」，请以原图及微信提示为准。</p>
+    {keys.map(key => {
+      const set = groups.filter(g => g.topic === key);
+      return (
+        <section class="qr-topic" data-qr-section={key}>
+          <div class="qr-topic-heading"><h2>{set[0].topic_title}</h2><p>{set[0].intro}</p></div>
+          <div class="qr-grid">{set.map(g => {
+            const image = '/assets/' + g.file;
+            return (
+              <article class="qr-card" data-qr-platform={g.platform}>
+                <div class="qr-card-head"><span>{g.platform_title}</span><h3>{g.title}</h3></div>
+                <a class="qr-image" href={image} target="_blank" rel="noopener noreferrer" aria-label={`查看${g.title}${g.platform_title}二维码原图`}><img src={image} alt={`${g.platform_title} · ${g.title}二维码`} width={g.width} height={g.height} loading="lazy" decoding="async" /></a>
+                <div class="qr-actions"><a href={image} target="_blank" rel="noopener noreferrer">查看原图 <span aria-hidden="true">↗</span></a><a href={image} download>保存图片 <span aria-hidden="true">↓</span></a></div>
+              </article>
+            );
+          })}</div>
+        </section>
+      );
+    })}
+    <p class="community-footnote">手机可点开原图后保存，在对应应用中识别；电脑可直接用微信或 QQ 扫码。1、2 群任选其一，入群结果以应用提示为准。</p>
+  </main>
+</Base>

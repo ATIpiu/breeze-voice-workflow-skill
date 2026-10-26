@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import DotField from '../components/react/DotField.jsx';
+import { StatusChip } from '../components/react/CodexStatus.jsx';
+import { posts, url, dot } from '../lib/posts';
+import routes from '../data/legacy-routes.json';
+import groups from '../data/community.json';
+
+const chapters = posts.filter(p => p.kind === 'chapter');
+const latest = posts.filter(p => p.kind !== 'chapter');
+const topics = [...new Map(groups.map(g => [g.topic, g])).values()];
+// The old home page was the Breeze hub; keep its #anchors redirecting to the chapter pages.
+const legacy = JSON.stringify(routes).replace(/</g, '\\u003c');
+const bars = Array.from({ length: 48 }, (_, i) => 18 + Math.round(Math.abs(Math.sin(i * 0.55) * 60 + Math.sin(i * 1.7) * 22)));
+---
+<Base title="笔记" description="记录 AI、工具和动手实践。ATIPIU 的个人博客。">
+  <main id="main" class="home">
+    <section class="home-hero">
+      <DotField client:idle />
+      <div class="home-hero-inner">
+        <p class="eyebrow" data-reveal>ATIPIU <span>/</span> FIELD NOTES <span>/</span> 2026</p>
+        <h1 data-reveal>记录 AI、工具<br />和<em>动手实践</em>。</h1>
+        <p class="home-sub" data-reveal>每篇都注明来源和验证范围：哪些实测过，哪些还没有。</p>
+        <div class="home-actions" data-reveal>
+          <a class="btn-ink" href="#home-latest">读最新文章 <span aria-hidden="true">↓</span></a>
+          <a class="btn-line" href="/feed.xml">RSS 订阅</a>
+        </div>
+        <dl class="home-stats" data-reveal>
+          <div><dt>文章</dt><dd>{posts.length}</dd></div>
+          <div><dt>项目</dt><dd>2</dd></div>
+          <div><dt>社群</dt><dd>{topics.length}</dd></div>
+        </dl>
+      </div>
+      <p class="hero-hint" aria-hidden="true">移动鼠标，或点一下</p>
+    </section>
+
+    <section class="featured" aria-label="精选">
+      <a class="feature-card feature-breeze" href="/notes/breeze-tts-2-local-guide/" data-spotlight data-reveal>
+        <div class="feature-top"><span class="feature-tag">指南 · {chapters.length} 篇</span><span class="feature-arrow" aria-hidden="true">↗</span></div>
+        <div class="wave" aria-hidden="true">{bars.map((h, i) => <i style={`--h:${h}%;--i:${i}`}></i>)}</div>
+        <div class="feature-copy">
+          <h2>Breeze TTS 2 使用指南</h2>
+          <p>把文字变成声音：图形版、便携版实测、音色 Prompt 和进阶配音，按需阅读。</p>
+          <ul>{chapters.map(c => <li>{c.chapter}</li>)}</ul>
+        </div>
+      </a>
+      <a class="feature-card feature-codex" href="https://blog.atipiu.org/codex-reset/" data-astro-prefetch="false" data-spotlight data-reveal>
+        <div class="feature-top"><span class="feature-tag">项目 · 免费订阅</span><span class="feature-arrow" aria-hidden="true">↗</span></div>
+        <div class="radar" aria-hidden="true"><i></i><b></b><b></b><b></b><span></span></div>
+        <div class="feature-copy">
+          <h2>Codex Reset Watch</h2>
+          <p>额度重置那一刻，你的邮箱先知道。只在确认是重置时才发邮件。</p>
+          <StatusChip client:visible />
+        </div>
+      </a>
+    </section>
+
+    <section class="latest" id="home-latest">
+      <div class="section-head" data-reveal><h2>最新文章</h2><a href="/archive/">全部 {posts.length} 篇 →</a></div>
+      {latest.map((p, n) => (
+        <a class="post-line" href={url(p)} data-reveal>
+          <span class="post-n">{String(n + 1).padStart(2, '0')}</span>
+          <span class="post-main"><strong>{p.title}</strong><em>{p.description}</em></span>
+          <span class="post-meta"><time datetime={p.date}>{dot(p.date)}</time><span>{p.category}</span></span>
+          <span class="post-go" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </section>
+
+    <section class="home-community" data-reveal>
+      <div><h2>想一起讨论？</h2><p>算法前沿、AI 生产力和娱乐创作，选个话题扫码进群。</p></div>
+      <div class="topic-pills">{topics.map(g => <a href="/community/">{g.topic_title}<span aria-hidden="true">↗</span></a>)}</div>
+    </section>
+  </main>
+  <script is:inline type="application/json" id="legacy-series-routes" set:html={legacy}></script>
+</Base>

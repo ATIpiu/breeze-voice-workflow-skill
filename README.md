@@ -1,6 +1,6 @@
 # Breeze Voice Workflow Skill
 
-[打开完整教程主页](https://atipiu.github.io/breeze-voice-workflow-skill/) · [下载独立 HTML](https://atipiu.github.io/breeze-voice-workflow-skill/breeze-tts-2-local-guide.html) · [Skill 下载](https://github.com/ATIpiu/breeze-voice-workflow-skill/releases/latest)
+[打开博客与教程](https://atipiu.github.io/breeze-voice-workflow-skill/) · [下载独立 HTML](https://atipiu.github.io/breeze-voice-workflow-skill/breeze-tts-2-local-guide.html) · [Skill 下载](https://github.com/ATIpiu/breeze-voice-workflow-skill/releases/latest)
 
 [Codex 重置提醒](https://blog.atipiu.org/codex-reset/) · [博客首页独立 HTML](https://atipiu.github.io/breeze-voice-workflow-skill/atipiu-blog.html)。首页和文章列表的 Codex 入口直接连接 Linux 笔记本上的订阅服务；静态站构建不会把这个地址改写到 GitHub Pages。首页 HTML 内嵌样式、交互与搜索索引，其他文章及在线订阅需要联网打开。发布前运行 `python tools/build_site.py` 和 `python tools/check_site.py`。
 
@@ -14,4 +14,4 @@
 
 [博客教程](https://blog.atipiu.org/notes/breeze-tts-2-local-guide/) · [官方模型源码与许可](https://github.com/breezeblue-ai/breeze-tts)
 
-`docs/` 是 GitHub Pages 网站：总览连接图形版安装、便携版安装、声音与 Prompt、进阶配音四篇教程，旧锚点会跳到对应章节。`website/` 是公开网页源码；维护同一份正文，由构建器拆成阅读页面。`breeze-tts-2-local-guide.html` 仍是包含全部内容、样音与下载包的单文件导出。服务器配置、研究临时文件与私人素材不在仓库中。修改网站源码后，运行 `python tools/build_site.py` 重新生成页面，提交 `docs/` 即可触发 Pages 发布。
+`docs/` 是 GitHub Pages 网站。最新博客采用用户提供的 Astro + React 版本，源码在 [`astro-blog/`](astro-blog/README.md)：进入该目录执行 `npm ci`、`npm run build` 和 `python3 ops/check-build.py`，再把 `dist/` 同步至仓库 `docs/`，提交即可发布。旧的 `website/` 与 Python 构建器保留为历史来源，不再用于当前站点发布。Breeze 教程的旧链接、53个锚点、音频与单文件下载继续保留。服务器配置、研究临时文件、凭据与私人素材不在公开网站源码中。

@@ -1,0 +1,56 @@
+---
+import site from '../data/site.json';
+import { REV } from '../lib/rev';
+import '../styles/fx.css';
+
+interface Props { title: string; path?: string; description?: string; active?: string; post?: { title: string; date: string }; wide?: boolean }
+const { title, path = '/', description = site.description, active = '', post } = Astro.props;
+const BASE = site.url.replace(/\/$/, '');
+const links = [['/archive/', 'archive', '文章'], ['/community/', 'community', '社群'], ['/about/', 'about', '关于']];
+const structured: Record<string, unknown> = { '@context': 'https://schema.org', '@type': post ? 'BlogPosting' : 'WebSite', name: title, url: BASE + path };
+if (post) Object.assign(structured, { headline: post.title, datePublished: post.date + 'T09:00:00+08:00', author: { '@type': 'Person', name: site.author }, description });
+const ld = JSON.stringify(structured).replace(/</g, '\\u003c');
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{title} · ATIPIU</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={BASE + path}>
+<meta property="og:type" content={post ? 'article' : 'website'}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={BASE + path}>
+<meta property="og:image" content={BASE + '/assets/cover.svg'}>
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="alternate" type="application/rss+xml" title="ATIPIU RSS" href="/feed.xml">
+<link rel="stylesheet" href={`/assets/editorial.css?v=${REV}`}>
+<script is:inline src={`/assets/theme.js?v=${REV}`}></script>
+<script is:inline defer src={`/assets/app.js?v=${REV}`}></script>
+<script is:inline type="application/ld+json" set:html={ld}></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="read-progress" aria-hidden="true"><i></i></div>
+<header class="header" data-header>
+  <a class="brand" href="/">ATIPIU<span>笔记</span></a>
+  <nav aria-label="主导航">
+    {links.map(([href, name, label]) => <a href={href} aria-current={active === name ? 'page' : undefined}>{label}</a>)}
+    <a class="nav-tool" href="/codex-reset/" data-astro-prefetch="false"><i aria-hidden="true"></i>Reset Watch</a>
+    <button class="plain-button" type="button" data-open-search aria-label="搜索文章">搜索</button>
+    <button class="theme-button" type="button" data-theme-toggle aria-label="切换深色模式" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg></button>
+  </nav>
+</header>
+<slot />
+<footer class="footer"><span>© 2026 ATIPIU</span><span class="footer-links"><a href="/codex-reset/" data-astro-prefetch="false">Reset Watch</a><a href="/community/">社群</a><a href="/feed.xml">RSS</a></span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><form method="dialog"><span id="search-title">搜索文章</span><button class="plain-button" aria-label="关闭搜索">关闭</button></form><label class="sr-only" for="search-input">输入标题或关键词</label><input id="search-input" type="search" placeholder="标题、关键词…" autocomplete="off"><div id="search-results" aria-live="polite"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+  import '../scripts/fx.js';
+</script>
+</body>
+</html>

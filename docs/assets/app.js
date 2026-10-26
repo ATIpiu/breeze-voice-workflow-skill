@@ -6,7 +6,7 @@
   function followLegacyAnchor(){
     if(!legacyRoutes)return false;
     let key;try{key=decodeURIComponent(location.hash.slice(1));}catch(_){return false;}
-    const route=JSON.parse(legacyRoutes.textContent)[key],script=document.querySelector('script[src*="/assets/app.js"]');
+    const route=JSON.parse(legacyRoutes.textContent)[key],script=document.querySelector('script[src*="/breeze-voice-workflow-skill/assets/app.js"]');
     if(!route||!script)return false;
     location.replace(new URL(route,new URL('../',script.src)).href);return true;
   }

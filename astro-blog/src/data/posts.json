@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "codex-reset-watch",
+    "title": "Codex Reset Watch：额度重置邮件提醒",
+    "subtitle": "一个免费的订阅服务 · 盯着时间线，只在确认重置时发邮件",
+    "description": "Codex 额度被提前重置时，用邮件第一时间通知你。介绍它怎么采集、判断和投递，以及邮箱隐私的处理方式。",
+    "date": "2026-10-26",
+    "category": "项目",
+    "tags": ["Codex", "邮件订阅", "开源工具"],
+    "minutes": 4,
+    "body": "codex-reset-watch.html",
+    "cover": "codex"
+  }
+]

@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import Row from '../../components/Row.astro';
+import { posts } from '../../lib/posts';
+const topics = [...new Set(posts.flatMap(p => [p.category, ...p.tags.slice(1)]))];
+---
+<Base title="全部文章" path="/archive/" active="archive">
+  <main id="main" class="page">
+    <div class="page-heading" data-reveal><h1>全部文章 <small>{posts.length}</small></h1></div>
+    <div class="filters" role="group" aria-label="按主题筛选"><button data-filter="" aria-pressed="true">全部</button>{topics.map(t => <button data-filter={t} aria-pressed="false">{t}</button>)}</div>
+    {posts.map(p => <Row p={p} />)}
+    <p class="empty-message" hidden>暂无文章。</p>
+  </main>
+</Base>

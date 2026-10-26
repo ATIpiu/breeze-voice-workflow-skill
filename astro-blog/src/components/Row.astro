@@ -1,0 +1,6 @@
+---
+import { url, dot, type Post } from '../lib/posts';
+const { p } = Astro.props as { p: Post };
+const terms = [p.title, p.subtitle, p.description, p.category, ...p.tags].join(' ');
+---
+<article class="note-row" data-note data-terms={terms} data-reveal><div class="meta"><time datetime={p.date}>{dot(p.date)}</time><span>{p.category}</span><span>{p.minutes} 分钟</span></div><h2><a href={url(p)}>{p.title}</a></h2><p>{p.description}</p><a class="read-link" href={url(p)}>阅读全文 →</a></article>

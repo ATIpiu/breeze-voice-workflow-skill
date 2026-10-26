@@ -374,7 +374,7 @@ cmake --build build-cpu --target breeze-server --parallel</code></pre></div>
   function followLegacyAnchor(){
     if(!legacyRoutes)return false;
     let key;try{key=decodeURIComponent(location.hash.slice(1));}catch(_){return false;}
-    const route=JSON.parse(legacyRoutes.textContent)[key],script=document.querySelector('script[src*="/assets/app.js"]');
+    const route=JSON.parse(legacyRoutes.textContent)[key],script=document.querySelector('script[src*="/breeze-voice-workflow-skill/assets/app.js"]');
     if(!route||!script)return false;
     location.replace(new URL(route,new URL('../',script.src)).href);return true;
   }
@@ -416,7 +416,7 @@ cmake --build build-cpu --target breeze-server --parallel</code></pre></div>
   $$('[data-share]').forEach(button=>button.addEventListener('click',()=>copy($('link[rel=canonical]')?.href || location.href,button)));
   $$('[data-filter]').forEach(button=>button.addEventListener('click',()=>{$$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));let found=0;$$('[data-note]').forEach(note=>{const match=!button.dataset.filter || note.dataset.terms.includes(button.dataset.filter);note.hidden=!match;if(match)found++;});const empty=$('.empty-message');if(empty)empty.hidden=found>0;}));
   const dialog=$('#search-dialog'),searchInput=$('#search-input'),results=$('#search-results');let searchData=null,searchLoad=null;
-  async function loadSearch(){if(searchData)return searchData;const embedded=document.getElementById('offline-search-index');if(embedded){searchData=JSON.parse(embedded.textContent);return searchData;}if(!searchLoad)searchLoad=fetch('/search.json').then(r=>{if(!r.ok)throw new Error('Search unavailable');return r.json();}).then(data=>searchData=data).catch(error=>{searchLoad=null;throw error;});return searchLoad;}
+  async function loadSearch(){if(searchData)return searchData;const embedded=document.getElementById('offline-search-index');if(embedded){searchData=JSON.parse(embedded.textContent);return searchData;}if(!searchLoad)searchLoad=fetch('/breeze-voice-workflow-skill/search.json').then(r=>{if(!r.ok)throw new Error('Search unavailable');return r.json();}).then(data=>searchData=data).catch(error=>{searchLoad=null;throw error;});return searchLoad;}
   function renderSearch(data){const term=searchInput.value.trim().toLocaleLowerCase();results.replaceChildren();const matches=data.filter(post=>[post.title,post.subtitle,post.description,post.category,...post.tags].join(' ').toLocaleLowerCase().includes(term));if(!matches.length){const p=document.createElement('p');p.textContent='没有找到这条笔记，换个关键词试试。';results.append(p);return;}for(const post of matches){const link=document.createElement('a');link.className='search-result';link.href=post.url;const title=document.createElement('strong');title.textContent=post.title;const text=document.createElement('span');text.textContent=post.subtitle+' · '+post.date;link.append(title,text);results.append(link);}}
   async function refreshSearch(){try{renderSearch(await loadSearch());}catch(_){results.textContent='搜索索引暂时无法加载，可以先到“全部文章”浏览。';}}
   function openSearch(){if(dialog.open)return;dialog.showModal();searchInput.focus();refreshSearch();}

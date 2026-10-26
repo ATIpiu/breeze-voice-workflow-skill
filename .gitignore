@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 outputs/
 website/dist/
+node_modules/
+astro-blog/dist/
+astro-blog/.astro/

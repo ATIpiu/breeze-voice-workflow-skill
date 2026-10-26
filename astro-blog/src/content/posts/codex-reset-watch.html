@@ -1,0 +1,45 @@
+<section id="why"><h2>为什么做它</h2>
+<p>Codex 的使用额度偶尔会被官方提前重置，消息通常先出现在 X 上。想第一时间知道，就得反复刷新时间线；不刷，又容易错过。</p>
+<p>Reset Watch 把“刷新”这件事交给程序：它定期检查推文，只有确认是额度重置的消息，才会给订阅者发邮件。产品更新、日常闲聊和没有证实的传闻都不会打扰你。</p>
+<p class="caption">这是独立的社区服务，不是 OpenAI 官方产品。重置范围与资格以原推文和官方说明为准。</p>
+</section>
+
+<section id="how"><h2>它是怎么运作的</h2>
+<ol class="codex-steps">
+<li><strong>采集。</strong>默认每 60 秒检查一次目标账号的新推文。可以用 X 官方 API，也可以用本机普通 Chrome 的只读连接器：它只读取博主主页的公开推文，不读取 Cookie、密码或私信。第一次运行只建立基线，不会把历史推文群发出去。</li>
+<li><strong>判断。</strong>新推文交给 DeepSeek Flash 判断是不是“额度重置”，要求返回严格的 JSON 结构；置信度不够高的保留复核。模型不可用时保留待重试，绝不按关键词自动群发。</li>
+<li><strong>通知。</strong>确认后，给每个已验证的订阅者单独发一封邮件，附上摘要、原推文链接和退订入口。同一条推文对同一个订阅者只排队一次；超过 24 小时的过时消息不再发送。</li>
+</ol>
+<div class="codex-flow" aria-hidden="true"><span>X 推文</span><i></i><span>判断</span><i></i><span>邮件</span></div>
+</section>
+
+<section id="privacy"><h2>邮箱与隐私</h2>
+<ul>
+<li>订阅需要输入 6 位验证码。验证码 10 分钟内有效，最多尝试 5 次。验证记录以 HMAC 形式存储；发信队列在投递前临时保存邮件正文，投递后清除。</li>
+<li>每封邮件单独投递，收件人看不到其他订阅者的地址。</li>
+<li>每封通知都带一键退订（支持 RFC 8058），退订后立即停止后续投递；已经交给邮件服务器的邮件可能仍会到达。</li>
+<li>没有统计脚本，不做营销邮件。</li>
+</ul>
+</section>
+
+<section id="design"><h2>页面设计</h2>
+<p>订阅页第一屏只放两样东西：一句话说明和订阅表单。“运作方式”“实时状态”“常见问题”都折叠在下方，想看再点开。</p>
+<p>背景是一个用 Three.js 写的粒子球，有雷达扫描光带，鼠标靠近会把粒子推开；订阅成功时粒子会炸开一下。设备性能不够时会自动减少粒子，再不行就换成静态背景。页面支持中英双语、深浅色和减少动态效果的系统设置。</p>
+</section>
+
+<section id="stack"><h2>技术栈</h2>
+<table>
+<thead><tr><th>部分</th><th>实现</th></tr></thead>
+<tbody>
+<tr><td>后端</td><td>Node.js 24、内置 SQLite 持久化队列、失败退避重试</td></tr>
+<tr><td>邮件</td><td>Gmail（应用专用密码或 OAuth2），HTML 与纯文本双版本</td></tr>
+<tr><td>前端</td><td>React、Vite、Three.js、GSAP、Lenis</td></tr>
+<tr><td>部署</td><td>与本博客同域的 <code>/codex-reset/</code> 子路径，systemd 用户服务</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="status-now"><h2>目前的状态</h2>
+<p>普通 Chrome 连接器已经实际读到目标账号的公开推文，Gmail 正式投递和 DeepSeek Flash 判断已启用，并完成真实接口联调。管理页面和管理接口已关闭；上方的公开状态卡显示当前采集情况。</p>
+<p><a href="/codex-reset/">前往订阅页 ↗</a></p>
+</section>
