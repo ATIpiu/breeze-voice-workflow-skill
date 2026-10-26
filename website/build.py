@@ -15,7 +15,7 @@ SITE=json.loads((ROOT/'site.json').read_text(encoding='utf-8'))
 POSTS=sorted(json.loads((ROOT/'content/posts.json').read_text(encoding='utf-8')),key=lambda p:p['date'],reverse=True)
 BASE=SITE['url'].rstrip('/')
 GROUPS=json.loads((ROOT/'content/community.json').read_text(encoding='utf-8'))
-ASSETS=('editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav','breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip',*(group['file'] for group in GROUPS))
+ASSETS=('editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav','breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip','breeze-voice-workflow-skill-20261026.zip',*(group['file'] for group in GROUPS))
 REV=hashlib.sha256(b''.join((ROOT/'assets'/name).read_bytes() for name in ASSETS)).hexdigest()[:12]
 
 def write(path,text):

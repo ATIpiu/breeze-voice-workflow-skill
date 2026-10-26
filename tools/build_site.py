@@ -14,7 +14,7 @@ prefix = '/breeze-voice-workflow-skill'
 article = 'notes/breeze-tts-2-local-guide/index.html'
 assets = ['editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd',
           'breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav',
-          'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip']
+          'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip','breeze-voice-workflow-skill-20261026.zip']
 community_images = [group['file'] for group in json.loads((root / 'content/community.json').read_text(encoding='utf-8'))]
 assets += community_images
 site.mkdir(exist_ok=True)
@@ -50,7 +50,7 @@ home = home.replace(base + '/notes/breeze-tts-2-local-guide/', base + '/')
 # Single-file export: style, interaction, samples, packages and search index are embedded.
 standalone = home
 for name in ['favicon.svg','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav',
-             'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip','start-breeze.cmd']:
+             'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip','breeze-voice-workflow-skill-20261026.zip','start-breeze.cmd']:
     kind = 'audio/wav' if name.endswith('.wav') else ('application/zip' if name.endswith('.zip') else ('image/svg+xml' if name.endswith('.svg') else 'application/octet-stream'))
     uri = 'data:' + kind + ';base64,' + base64.b64encode((root / 'assets' / name).read_bytes()).decode()
     if name.endswith(('.zip', '.cmd')):
