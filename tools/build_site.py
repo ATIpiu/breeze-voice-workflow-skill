@@ -15,6 +15,8 @@ article = 'notes/breeze-tts-2-local-guide/index.html'
 assets = ['editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd',
           'breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav',
           'breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip']
+community_images = [group['file'] for group in json.loads((root / 'content/community.json').read_text(encoding='utf-8'))]
+assets += community_images
 site.mkdir(exist_ok=True)
 (site / 'assets').mkdir(exist_ok=True)
 
@@ -24,11 +26,12 @@ def html_urls(text):
                   lambda m: m[1] + prefix + m[2] + m[3], text)
     return text.replace('</div><p class="skill-note">', '</div><p class="skill-note"><a href="' + prefix + '/breeze-tts-2-local-guide.html" download="breeze-tts-2-local-guide.html">下载独立 HTML</a> · ')
 
-for page in ['archive/index.html', 'about/index.html', '404.html', article]:
+for page in ['archive/index.html', 'about/index.html', 'community/index.html', '404.html', article]:
     target = site / page
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(html_urls((root / 'dist' / page).read_text(encoding='utf-8')), encoding='utf-8')
 for name in assets:
+    (site / 'assets' / name).parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(root / 'assets' / name, site / 'assets' / name)
 app = (site / 'assets/app.js').read_text(encoding='utf-8')
 app = app.replace("fetch('/search.json')", "fetch('" + prefix + "/search.json')")

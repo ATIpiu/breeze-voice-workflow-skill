@@ -14,7 +14,8 @@ OUT=ROOT/'dist'
 SITE=json.loads((ROOT/'site.json').read_text(encoding='utf-8'))
 POSTS=sorted(json.loads((ROOT/'content/posts.json').read_text(encoding='utf-8')),key=lambda p:p['date'],reverse=True)
 BASE=SITE['url'].rstrip('/')
-ASSETS=('editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav','breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip')
+GROUPS=json.loads((ROOT/'content/community.json').read_text(encoding='utf-8'))
+ASSETS=('editorial.css','theme.js','app.js','favicon.svg','cover.svg','start-breeze.cmd','breeze-demo.wav','breeze-gentle.wav','breeze-bright.wav','breeze-voice-workflow-20261025.zip','breeze-voice-workflow-skill-20261025.zip',*(group['file'] for group in GROUPS))
 REV=hashlib.sha256(b''.join((ROOT/'assets'/name).read_bytes() for name in ASSETS)).hexdigest()[:12]
 
 def write(path,text):
@@ -25,7 +26,7 @@ def url(p): return '/notes/'+p['slug']+'/'
 
 def frame(title,body,path='/',description=None,active='',post=None):
     desc=description or SITE['description']
-    links=''.join(f'<a href="{href}"'+(' aria-current="page"' if active==name else '')+f'>{label}</a>' for href,name,label in [('/archive/','archive','文章'),('/about/','about','关于')])
+    links=''.join(f'<a href="{href}"'+(' aria-current="page"' if active==name else '')+f'>{label}</a>' for href,name,label in [('/archive/','archive','文章'),('/community/','community','社群'),('/about/','about','关于')])
     structured={'@context':'https://schema.org','@type':'BlogPosting' if post else 'WebSite','name':title,'url':BASE+path}
     if post: structured.update(headline=post['title'],datePublished=post['date']+'T09:00:00+08:00',author={'@type':'Person','name':SITE['author']},description=desc)
     ld=json.dumps(structured,ensure_ascii=False).replace('<','\\u003c')
@@ -37,7 +38,9 @@ def row(p):
 
 def build():
     OUT.mkdir(exist_ok=True); (OUT/'assets').mkdir(exist_ok=True)
-    for name in ASSETS: shutil.copyfile(ROOT/'assets'/name,OUT/'assets'/name)
+    for name in ASSETS:
+        (OUT/'assets'/name).parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(ROOT/'assets'/name,OUT/'assets'/name)
     rows=''.join(row(p) for p in POSTS)
     write('index.html',frame('笔记',f'<main id="main" class="page"><div class="page-heading"><h1>笔记</h1><p>记录 AI、工具和动手实践。</p></div>{rows}</main>'))
     topics=list(dict.fromkeys(t for p in POSTS for t in [p['category'],*p['tags'][1:]]))
@@ -59,6 +62,17 @@ def build():
         write('notes/'+p['slug']+'/index.html',frame(p['title'],content,url(p),p['description'],post=p))
     about='''<main id="main" class="page"><div class="page-heading"><h1>关于</h1></div><div class="prose"><p>我是 ATIPIU。这里记录 AI、本地部署和创作工具的使用笔记。</p><p>文章会注明信息来源和验证范围。可以通过 <a href="/feed.xml">RSS</a> 订阅更新。</p></div></main>'''
     write('about/index.html',frame('关于',about,'/about/',active='about'))
+    topic_filters=''.join(f'<button type="button" data-qr-topic="{key}" aria-pressed="false">{title}</button>' for key,title in [('algorithm','算法讨论'),('productivity','AI 生产力'),('entertainment','AI 娱乐')])
+    sections=''
+    for key in dict.fromkeys(group['topic'] for group in GROUPS):
+        group_set=[group for group in GROUPS if group['topic']==key]
+        cards=''
+        for group in group_set:
+            image='/assets/'+group['file']
+            cards+=f'''<article class="qr-card" data-qr-platform="{group['platform']}"><div class="qr-card-head"><span>{group['platform_title']}</span><h3>{e(group['title'])}</h3></div><a class="qr-image" href="{image}" target="_blank" rel="noopener noreferrer" aria-label="查看{e(group['title'])}{group['platform_title']}二维码原图"><img src="{image}" alt="{group['platform_title']} · {e(group['title'])}二维码" width="{group['width']}" height="{group['height']}" loading="lazy" decoding="async"></a><div class="qr-actions"><a href="{image}" target="_blank" rel="noopener noreferrer">查看原图 <span aria-hidden="true">↗</span></a><a href="{image}" download>保存图片 <span aria-hidden="true">↓</span></a></div></article>'''
+        sections+=f'''<section class="qr-topic" data-qr-section="{key}"><div class="qr-topic-heading"><h2>{e(group_set[0]['topic_title'])}</h2><p>{e(group_set[0]['intro'])}</p></div><div class="qr-grid">{cards}</div></section>'''
+    community=f'''<main id="main" class="page community-page" data-community><header class="community-intro"><p class="eyebrow">ATIPIU / COMMUNITY</p><h1>选个话题，<br>一起聊聊。</h1><p>算法前沿、AI 生产力和娱乐创作。找到感兴趣的方向，扫码加入讨论。</p></header><div class="community-controls" data-qr-controls hidden><div class="qr-platforms" role="group" aria-label="选择群聊平台"><button type="button" data-qr-select="wechat" aria-pressed="true">微信</button><button type="button" data-qr-select="qq" aria-pressed="false">QQ</button></div><div class="qr-filters" role="group" aria-label="选择群聊主题"><button type="button" data-qr-topic="all" aria-pressed="true">全部主题</button>{topic_filters}</div></div><div class="qr-meta"><span data-qr-count aria-live="polite">12 个群聊二维码</span><span>更新于 2026.10.26</span></div><p class="qr-expiry" data-qr-expiry>微信二维码原图标注「11月2日前有效」，请以原图及微信提示为准。</p>{sections}<p class="community-footnote">手机可点开原图后保存，在对应应用中识别；电脑可直接用微信或 QQ 扫码。1、2 群任选其一，入群结果以应用提示为准。</p></main>'''
+    write('community/index.html',frame('社群 · AI 主题群聊',community,'/community/',description='算法前沿、AI 生产力与娱乐创作的微信群、QQ群二维码。',active='community'))
     write('404.html',frame('页面不存在','<main id="main" class="page"><div class="page-heading"><h1>页面不存在</h1><p>这个地址没有文章。</p></div><a href="/">返回首页 →</a></main>','/404.html'))
     write('search.json',json.dumps([{k:p[k] for k in ['title','subtitle','description','category','tags','date']}|{'url':url(p)} for p in POSTS],ensure_ascii=False))
     rss=ET.Element('rss',version='2.0'); channel=ET.SubElement(rss,'channel')
@@ -69,7 +83,7 @@ def build():
         for k,v in [('title',p['title']),('link',BASE+url(p)),('guid',BASE+url(p)),('description',p['description']),('pubDate',date)]: ET.SubElement(item,k).text=v
     write('feed.xml','<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(rss,encoding='unicode'))
     sitemap=ET.Element('urlset',xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
-    for path in ['/','/archive/','/about/',*[url(p) for p in POSTS]]:
+    for path in ['/','/archive/','/community/','/about/',*[url(p) for p in POSTS]]:
         item=ET.SubElement(sitemap,'url'); ET.SubElement(item,'loc').text=BASE+path
     write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(sitemap,encoding='unicode'))
     write('robots.txt','User-agent: *\nAllow: /\nSitemap: '+BASE+'/sitemap.xml\n')

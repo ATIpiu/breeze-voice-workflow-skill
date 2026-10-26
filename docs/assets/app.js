@@ -8,6 +8,30 @@
   const themeButton=$('[data-theme-toggle]');
   function updateThemeButton(){const dark=document.documentElement.dataset.theme==='dark';themeButton?.setAttribute('aria-pressed',String(dark));themeButton?.setAttribute('aria-label',dark?'切换浅色模式':'切换深色模式');}
   updateThemeButton();
+  const community=$('[data-community]');
+  if(community){
+    let qrPlatform='wechat',qrTopic='all';
+    const platformButtons=$$('[data-qr-select]',community),topicButtons=$$('[data-qr-topic]',community);
+    function renderGroups(){
+      let count=0;
+      $$('[data-qr-section]',community).forEach(section=>{
+        const topicMatches=qrTopic==='all'||section.dataset.qrSection===qrTopic;
+        section.hidden=!topicMatches;
+        $$('[data-qr-platform]',section).forEach(card=>{
+          card.hidden=card.dataset.qrPlatform!==qrPlatform;
+          if(topicMatches&&!card.hidden)count++;
+        });
+      });
+      platformButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.qrSelect===qrPlatform)));
+      topicButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.qrTopic===qrTopic)));
+      $('[data-qr-count]',community).textContent=count+' 个'+(qrPlatform==='wechat'?'微信':'QQ')+'群聊二维码';
+      $('[data-qr-expiry]',community).hidden=qrPlatform!=='wechat';
+    }
+    platformButtons.forEach(button=>button.addEventListener('click',()=>{qrPlatform=button.dataset.qrSelect;renderGroups();}));
+    topicButtons.forEach(button=>button.addEventListener('click',()=>{qrTopic=button.dataset.qrTopic;renderGroups();}));
+    $('[data-qr-controls]',community).hidden=false;
+    renderGroups();
+  }
   themeButton?.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;store.set('atipiu-theme',next);updateThemeButton();});
   async function copy(text,button){try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);}else{const field=document.createElement('textarea');field.value=text;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('copy unavailable');}if(button){const original=button.textContent;button.textContent='已复制 ✓';setTimeout(()=>button.textContent=original,1800);}toast('已复制到剪贴板');}catch(_){toast('当前浏览器无法自动复制，请选中文字手动复制。');}}
   $$('[data-copy]').forEach(button=>button.addEventListener('click',()=>{const target=document.getElementById(button.dataset.copy);if(target)copy(target.textContent,button);}));
