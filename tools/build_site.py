@@ -74,7 +74,8 @@ for filename in ['theme.js','app.js']:
 app_match = re.search(r'<script defer>(.*?)</script>', standalone, re.S)
 assert app_match
 standalone = standalone[:app_match.start()] + standalone[app_match.end():]
-embedded = '<script type="application/json" id="offline-search-index">' + json.dumps(search, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
+offline_search=[{**item,'url':'https://atipiu.github.io'+item['url'] if item['url'].startswith('/') else item['url']} for item in search]
+embedded = '<script type="application/json" id="offline-search-index">' + json.dumps(offline_search, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
 standalone = standalone.replace('</body>', embedded + '<script>' + app_match[1] + '</script></body>')
 standalone = re.sub(r'((?:href|src)=")(' + re.escape(prefix) + r'/[^\"]*)(")', lambda m: m[1] + 'https://atipiu.github.io' + m[2] + m[3], standalone)
 (repo / 'breeze-tts-2-local-guide.html').write_text(standalone, encoding='utf-8')

@@ -39,5 +39,7 @@ feed=ET.parse(root/'feed.xml');assert any(item.findtext('link')==service for ite
 ET.parse(root/'sitemap.xml')
 offline=(root/'atipiu-blog.html').read_text(encoding='utf-8')
 assert 'id="offline-search-index"' in offline and service in offline
+offline_search=json.loads(re.search(r'id="offline-search-index">(.*?)</script>',offline,re.S)[1])
+assert all(item['url'].startswith('https://') for item in offline_search)
 assert not re.search(r'<(?:script[^>]+src|link[^>]+rel="stylesheet")',offline)
 print(f'PASS: {len(pages)} pages, navigation, feeds, live service URLs and standalone homepage.')
