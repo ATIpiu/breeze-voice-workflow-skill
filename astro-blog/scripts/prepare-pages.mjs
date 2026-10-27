@@ -1,8 +1,9 @@
 import {readFile,writeFile,readdir} from 'node:fs/promises';
 import path from 'node:path';
-const output=path.resolve('dist'),base='/breeze-voice-workflow-skill';
+const pages=process.argv.includes('--pages');
+const output=path.resolve(pages?'dist-pages':'dist'),base=pages?'/breeze-voice-workflow-skill':'';
 function target(url){
-  if(url.startsWith('//') || url===base || url.startsWith(base+'/'))return url;
+  if(url.startsWith('//') || (base && (url===base || url.startsWith(base+'/'))))return url;
   if(/^\/codex-reset(?:\/|[?#]|$)/.test(url))return 'https://blog.atipiu.org'+url;
   return base+url;
 }
@@ -12,7 +13,7 @@ async function walk(folder){
   for(const entry of await readdir(folder,{withFileTypes:true})){
     const file=path.join(folder,entry.name);
     if(entry.isDirectory())await walk(file);
-    else if(entry.name.endsWith('.html'))await writeFile(file,quotedUrls(await readFile(file,'utf8')));
+    else if(entry.name.endsWith('.html'))await writeFile(file,quotedUrls((await readFile(file,'utf8')).replaceAll('https://atipiu.github.io/breeze-voice-workflow-skill/','https://blog.atipiu.org/')));
   }
 }
 await walk(output);
@@ -21,4 +22,4 @@ const searchFile=path.join(output,'search.json'),search=JSON.parse(await readFil
 for(const item of search)if(item.url.startsWith('/'))item.url=target(item.url);
 await writeFile(searchFile,JSON.stringify(search));
 await writeFile(path.join(output,'.nojekyll'),'');
-console.log('Prepared GitHub Pages paths; live Codex service stays on blog.atipiu.org.');
+console.log(`Prepared ${pages?'GitHub Pages backup':'blog.atipiu.org root'} paths; canonical URLs use blog.atipiu.org.`);

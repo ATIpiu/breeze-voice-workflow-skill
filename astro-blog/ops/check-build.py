@@ -5,12 +5,13 @@ from urllib.parse import urlsplit, unquote
 import json
 import re
 import xml.etree.ElementTree as ET
+import sys
 
-root=Path(__file__).resolve().parents[1]/'dist'
-prefix='/breeze-voice-workflow-skill'
+root=Path(__file__).resolve().parents[1]/('dist-pages' if '--pages' in sys.argv else 'dist')
+prefix='/breeze-voice-workflow-skill' if '--pages' in sys.argv else ''
 def local_path(value):
-    if value==prefix:return '/'
-    return value[len(prefix):] if value.startswith(prefix+'/') else value
+    if prefix and value==prefix:return '/'
+    return value[len(prefix):] if prefix and value.startswith(prefix+'/') else value
 class Parser(HTMLParser):
     def __init__(self): super().__init__(); self.ids=set(); self.refs=[]; self.h1=0; self.title=False
     def handle_starttag(self,tag,attrs):
@@ -37,7 +38,7 @@ for page,p in pages.items():
         if target.is_dir(): target=target/'index.html'
         assert target.is_file(), f'Broken local URL {ref} in {page}'
         if parsed.fragment and target in pages:
-            assert unquote(parsed.fragment) in pages[target].ids, f'Missing fragment {ref}'
+            assert unquote(parsed.fragment) in pages[target].ids, f'Missing fragment {ref} in {page}'
 ET.parse(root/'feed.xml'); ET.parse(root/'sitemap.xml')
 assert len(json.loads((root/'search.json').read_text(encoding='utf-8')))>0
 hub=(root/'notes/breeze-tts-2-local-guide/index.html').read_text(encoding='utf-8')
@@ -54,6 +55,8 @@ if legacy:
 print(f'PASS: {len(pages)} HTML pages, internal links and fragments, RSS, sitemap, search index.')
 home=(root/'index.html').read_text(encoding='utf-8')
 assert 'https://blog.atipiu.org/codex-reset/' in home
-assert not re.search(r'(?:href|src)="/(?!breeze-voice-workflow-skill/|/)',home)
+if prefix: assert not re.search(r'(?:href|src)="/(?!breeze-voice-workflow-skill/|/)',home)
+else: assert '/breeze-voice-workflow-skill/' not in home
 assert all(item['url'].startswith(prefix+'/') for item in json.loads((root/'search.json').read_text(encoding='utf-8')))
-print('PASS: Pages prefix and live service links.')
+assert '<link rel="canonical" href="https://blog.atipiu.org/"' in home
+print('PASS: Hosting paths, canonical domain and live service links.')

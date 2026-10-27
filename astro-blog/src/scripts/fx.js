@@ -14,9 +14,9 @@ if (!reduce) {
   });
   const raf = time => { lenis.raf(time); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
-  // The search dialog should freeze the page behind it.
-  const dialog = document.getElementById('search-dialog');
-  if (dialog) new MutationObserver(() => (dialog.open ? lenis.stop() : lenis.start())).observe(dialog, { attributes: true, attributeFilter: ['open'] });
+  // Freeze background scrolling while any modal is open.
+  const syncDialogs = () => document.querySelector('dialog[open]') ? lenis.stop() : lenis.start();
+  document.querySelectorAll('dialog').forEach(dialog => new MutationObserver(syncDialogs).observe(dialog, { attributes: true, attributeFilter: ['open'] }));
 }
 
 // Reveal on scroll. Legacy guide pages get the same treatment for their cards.

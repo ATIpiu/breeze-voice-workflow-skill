@@ -6,4 +6,5 @@ outputs/
 website/dist/
 node_modules/
 astro-blog/dist/
+astro-blog/dist-pages/
 astro-blog/.astro/

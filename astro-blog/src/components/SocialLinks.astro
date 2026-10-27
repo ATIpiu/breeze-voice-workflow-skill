@@ -1,0 +1,58 @@
+---
+const accounts = [
+  { key: 'xiaohongshu', platform: '小红书', account: '小红书号 · 5346265294', href: 'https://www.xiaohongshu.com/user/profile/63610722000000001f01b8ac', scan: '用小红书扫一扫', mark: '红' },
+  { key: 'douyin', platform: '抖音', account: '抖音号 · 1522760512ati', href: 'https://www.douyin.com/user/MS4wLjABAAAAd4xTU3Y2zf-oWyxOcxvolhVusGsPYqmAVfRIlDwt38hJ6WEefz0eEJCE34MAHEtr', scan: '用抖音扫一扫', mark: '♪' },
+  { key: 'bilibili', platform: '哔哩哔哩', account: 'B 站 UID · 113593166', href: 'https://space.bilibili.com/113593166', scan: '扫码打开 B 站主页', mark: 'B' },
+];
+---
+<section class="home-social" id="home-social" aria-labelledby="social-heading">
+  <div class="social-heading" data-reveal>
+    <div><p class="eyebrow">ELSEWHERE / 在别处</p><h2 id="social-heading">也可以在这里找到我</h2></div>
+    <p>AI 实践、工具体验，还有创作记录。</p>
+  </div>
+  <div class="social-grid">
+    {accounts.map(account => (
+      <article class={`social-card social-${account.key}`} data-reveal>
+        <div class="social-platform"><span class="social-mark" aria-hidden="true">{account.mark}</span><h3>{account.platform}</h3><span class="social-platform-en" aria-hidden="true">{account.key === 'xiaohongshu' ? 'REDNOTE' : account.key.toUpperCase()}</span></div>
+        <a class="social-name" href={account.href} target="_blank" rel="noopener noreferrer" data-astro-prefetch="false" aria-label={`访问 ATIpiu 的${account.platform}主页`}>ATIpiu <span aria-hidden="true">↗</span></a>
+        <p class="social-account">{account.account}</p>
+        <div class="social-connect">
+          <a class="social-qr" href={`/assets/social/${account.key}-qr.png`} data-social-qr data-platform={account.platform} data-scan={account.scan} aria-label={`放大${account.platform}二维码`}>
+            <img src={`/assets/social/${account.key}-qr.png`} width="120" height="120" alt={`ATIpiu 的${account.platform}二维码`} loading="lazy" />
+          </a>
+          <div class="social-connect-copy"><p>{account.scan}</p><span>点击二维码可放大</span><a href={account.href} target="_blank" rel="noopener noreferrer" data-astro-prefetch="false">访问主页 <span aria-hidden="true">↗</span></a></div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+<dialog id="social-qr-dialog" class="social-qr-dialog" aria-labelledby="social-qr-title">
+  <form method="dialog"><h2 id="social-qr-title">关注 ATIpiu</h2><button type="submit" aria-label="关闭二维码">×</button></form>
+  <img id="social-qr-image" width="360" height="360" alt="" />
+  <p id="social-qr-hint"></p>
+  <a id="social-qr-download" download>保存二维码 ↓</a>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#social-qr-dialog');
+  const image = document.querySelector<HTMLImageElement>('#social-qr-image');
+  const title = document.querySelector('#social-qr-title');
+  const hint = document.querySelector('#social-qr-hint');
+  const download = document.querySelector<HTMLAnchorElement>('#social-qr-download');
+  let trigger: HTMLAnchorElement | null = null;
+  document.querySelectorAll<HTMLAnchorElement>('[data-social-qr]').forEach(link => {
+    link.addEventListener('click', event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      if (!dialog || !image || !title || !hint || !download) return;
+      event.preventDefault();
+      trigger = link;
+      image.src = link.href;
+      image.alt = `ATIpiu 的${link.dataset.platform}二维码`;
+      title.textContent = `${link.dataset.platform} · ATIpiu`;
+      hint.textContent = `${link.dataset.scan}，或保存图片后在 App 中识别。`;
+      download.href = link.href;
+      dialog.showModal();
+    });
+  });
+  dialog?.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  dialog?.addEventListener('close', () => trigger?.focus({ preventScroll: true }));
+</script>

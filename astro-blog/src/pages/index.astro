@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import DotField from '../components/react/DotField.jsx';
 import { StatusChip } from '../components/react/CodexStatus.jsx';
 import { posts, url, dot } from '../lib/posts';
@@ -24,6 +25,7 @@ const bars = Array.from({ length: 48 }, (_, i) => 18 + Math.round(Math.abs(Math.
         <div class="home-actions" data-reveal>
           <a class="btn-ink" href="#home-latest">读最新文章 <span aria-hidden="true">↓</span></a>
           <a class="btn-line" href="/feed.xml">RSS 订阅</a>
+          <a class="home-social-jump" href="#home-social">社媒账号 <span aria-hidden="true">↗</span></a>
         </div>
         <dl class="home-stats" data-reveal>
           <div><dt>文章</dt><dd>{posts.length}</dd></div>
@@ -66,6 +68,8 @@ const bars = Array.from({ length: 48 }, (_, i) => 18 + Math.round(Math.abs(Math.
         </a>
       ))}
     </section>
+
+    <SocialLinks />
 
     <section class="home-community" data-reveal>
       <div><h2>想一起讨论？</h2><p>算法前沿、AI 生产力和娱乐创作，选个话题扫码进群。</p></div>

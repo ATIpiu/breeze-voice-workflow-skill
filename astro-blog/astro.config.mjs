@@ -2,8 +2,8 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  site: 'https://atipiu.github.io',
-  base: '/breeze-voice-workflow-skill',
+  site: 'https://blog.atipiu.org',
+  base: '/',
   trailingSlash: 'always',
   build: { format: 'directory', assets: '_astro' },
   integrations: [react()],
